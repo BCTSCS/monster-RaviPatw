@@ -7,31 +7,46 @@ public class SimpleClient {
     private PrintWriter out;
     private Scanner in;
 
-    public SimpleClient(String ip, int port) throws IOException{
-        this.socket = new Socket(ip,port);
-        System.out.println("Client is connecting"+port);
+    public SimpleClient(String ip, int port) throws IOException  {
+        this.socket = new Socket(ip, port);
+        System.out.println("Client is connecting");
+        
         InputStream i = socket.getInputStream();
         OutputStream o = socket.getOutputStream();
         in = new Scanner(i);
         out = new PrintWriter(o, true);
     }
+
     public void sendMessage(String message) {
         out.println(message);
     }
 
     public String receiveMessage() { 
         return in.nextLine();
-     }
-    public void close() {}
+    }
+
+    public void close() {
+
+    }
 
     public static void main(String[] args) throws IOException {
-        SimpleClient a = new SimpleClient("127.0.0.1",8888);
-        FileOperator file = new FileOperator("client.txt");
+        SimpleClient a = new SimpleClient("127.0.0.1", 8888);
         
-        a.sendMessage("Hi There");
-        String server=a.receiveMessage();
-        System.out.println("Server : "+ server);
+        FileOperator file = new FileOperator("client.txt");
+        while(true){
+            String message=file.readLine();
+        a.sendMessage(message);
+        if(message.equals("exit")){
+            break;
+        }
+        System.out.println("Me: "+message);
+        String server = a.receiveMessage();
+        System.out.println("Server: " + server);
+
+        }
+        a.close();
     }
 }
+
 
 
